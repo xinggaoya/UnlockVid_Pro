@@ -3,7 +3,7 @@
 import {computed, ref} from "vue";
 
 const playLine = [
-  {"name": "纯净1", "url": "https://im1907.top/?jx=", "mobile": 1},
+  {"name": "虾米", "url": "https://jx.xmflv.com/?url=", "mobile": 1},
   {"name": "纯净", "url": "https://jx.m3u8.tv/jx/jx.php?url=", "mobile": 1},
   {"name": "B站1", "url": "https://jx.jsonplayer.com/player/?url=", "mobile": 1},
   {"name": "爱豆", "url": "https://jx.aidouer.net/?url=", "mobile": 1},
@@ -19,7 +19,6 @@ const playLine = [
   {"name": "七哥", "url": "https://jx.nnxv.cn/tv.php?url=", "mobile": 0},
   {"name": "听乐", "url": "https://jx.dj6u.com/?url=", "mobile": 1},
   {"name": "维多", "url": "https://jx.ivito.cn/?url=", "mobile": 0},
-  {"name": "虾米", "url": "https://jx.xmflv.com/?url=", "mobile": 0},
   {"name": "YT", "url": "https://jx.yangtu.top/?url=", "mobile": 0},
   {"name": "夜幕", "url": "https://www.yemu.xyz/?url=", "mobile": 0},
   {"name": "云析", "url": "https://jx.yparse.com/index.php?url=", "mobile": 0},
@@ -34,8 +33,13 @@ const iframeUrl = computed(() => {
   return vipAddress.value + videoAddress.value
 })
 
-const vipAddress = ref(playLine[1].url);
+const vipAddress = ref(playLine[0].url);
 const videoAddress = ref('');
+
+// 宽度判断是否为移动端
+const isMobile = () => {
+  return document.body.clientWidth <= 768
+}
 
 </script>
 
@@ -47,9 +51,9 @@ const videoAddress = ref('');
     </div>
     <div>
       <iframe
-          width="375"
-          height="210"
           :src="iframeUrl"
+          :width="isMobile() ? '100%' : '450px'"
+          height="250px"
           title="YouTube video player"
           allowfullscreen
           frameborder="0"
@@ -65,7 +69,7 @@ const videoAddress = ref('');
     <div>
       视频链接：<input type="text" v-model="videoAddress" placeholder="请输入视频原链接"/>
     </div>
-    <div>
+    <ul class="fool-a">
       <a href="https://www.iqiyi.com" target="_blank">
         <li>爱奇艺</li>
       </a>
@@ -75,7 +79,7 @@ const videoAddress = ref('');
       <a href="https://www.youku.com" target="_blank">
         <li>优酷</li>
       </a>
-    </div>
+    </ul>
   </div>
 </template>
 
@@ -87,6 +91,13 @@ const videoAddress = ref('');
 
 .max-main div {
   margin: 10px 0;
+}
+
+.fool-a{
+  display: flex;
+  justify-content: space-around;
+  list-style: none;
+  padding: 20px 0;
 }
 
 /* 输入框样式 */
