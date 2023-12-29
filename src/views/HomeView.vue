@@ -87,6 +87,8 @@ const isMobile = () => {
 
 .max-main {
   text-align: center;
+  max-width: 700px;
+  margin: 0 auto;
 }
 
 .max-main div {
