@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
+import { ElNotification } from 'element-plus'
 
 const playLine = [
   { 'name': '2ys', 'url': 'https://gj.fenxiangb.com/player/analysis.php?v=', 'mobile': 0 },
@@ -20,8 +21,7 @@ const playLine = [
   { 'name': '云析', 'url': 'https://jx.yparse.com/index.php?url=', 'mobile': 0 },
   { 'name': '17云', 'url': 'https://www.1717yun.com/jx/ty.php?url=', 'mobile': 0 },
   { 'name': '180', 'url': 'https://jx.000180.top/jx/?url=', 'mobile': 0 },
-  { 'name': '4K', 'url': 'https://jx.4kdv.com/?url=', 'mobile': 1 },
-  { 'name': '8090', 'url': 'https://www.8090g.cn/?url=', 'mobile': 0 }
+  { 'name': '4K', 'url': 'https://jx.4kdv.com/?url=', 'mobile': 1 }
 ]
 
 const iframeUrl = computed(() => {
@@ -53,25 +53,32 @@ onMounted(() => {
   if (vip) {
     vipAddress.value = vip
   }
+
+  ElNotification({
+    title: '提示',
+    message: '部分接口存在恶意广告；仅供测试！！',
+    type: 'warning'
+  })
 })
 </script>
 
 <template>
   <div class="common-layout">
     <el-container>
-      <el-header style="text-align: center">
-        <div style="height: 40px">
-          <el-image src="/favicon.ico" style="width: 40px;" />
+      <el-header class="main-header">
+        <div>
+          <el-image src="/favicon.ico" style="width: 40px;margin: 0 10px" />
+        </div>
+        <div class="main-center">
           <h1 style="display: inline-block">UnlockVid Pro</h1>
         </div>
       </el-header>
-      <el-main style="text-align: center">
+      <el-main>
         <div>
           <iframe
             id="playLine"
             :src="iframeUrl"
-            :width="isMobile() ? '100%' : '450px'"
-            height="250px"
+            width="100%"
             title="YouTube video player"
             allowfullscreen
             frameborder="0"
@@ -79,7 +86,7 @@ onMounted(() => {
           ></iframe>
         </div>
         <div>
-          <div style="width: 400px;margin: 0 auto">
+          <div>
             <el-form label-position="top">
               <el-form-item label="播放线路">
                 <el-select v-model="vipAddress" placeholder="请选择播放线路" @change="vipAddressChange">
@@ -97,25 +104,55 @@ onMounted(() => {
               </el-form-item>
             </el-form>
           </div>
-          <el-space>
-            <el-link type="info" href="https://www.iqiyi.com">爱奇艺</el-link>
-            <el-link type="info" href="https://v.qq.com">腾讯视频</el-link>
-            <el-link type="info" href="https://www.youku.com">优酷</el-link>
-          </el-space>
+          <div class="main-center">
+            <el-space>
+              <el-link type="info" href="https://www.iqiyi.com">爱奇艺</el-link>
+              <el-link type="info" href="https://v.qq.com">腾讯视频</el-link>
+              <el-link type="info" href="https://www.youku.com">优酷</el-link>
+            </el-space>
+          </div>
         </div>
       </el-main>
-      <el-footer style="text-align: center">
-        <div>
-          <el-text tag="mark">请注意部分接口存在恶意广告，请斟酌使用；仅供测试</el-text>
-        </div>
+      <el-footer class="main-center">
+        <el-text tag="mark">请注意部分接口存在恶意广告，请斟酌使用；仅供测试</el-text>
       </el-footer>
     </el-container>
   </div>
 </template>
 
 <style scoped>
-.common-layout {
-  width: 100%;
-  height: 100%;
+@media screen and (max-width: 768px) {
+  .common-layout {
+    width: 100%;
+    height: 100%;
+  }
+
+  #playLine {
+    width: 100%;
+    height: 250px;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .common-layout {
+    width: 768px;
+    height: 100%;
+    margin: 0 auto;
+  }
+
+  #playLine {
+    width: 100%;
+    height: 450px;
+  }
+}
+
+.main-center {
+  text-align: center;
+}
+
+.main-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>
