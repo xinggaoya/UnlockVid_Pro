@@ -1,27 +1,11 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-import { ElNotification } from 'element-plus'
+import { ElMessage, ElNotification } from 'element-plus'
 
 const playLine = [
-  { 'name': '2ys', 'url': 'https://gj.fenxiangb.com/player/analysis.php?v=', 'mobile': 0 },
-  { 'name': '虾米', 'url': 'https://jx.xmflv.com/?url=', 'mobile': 1 },
-  { 'name': 'B站1', 'url': 'https://jx.jsonplayer.com/player/?url=', 'mobile': 1 },
-  { 'name': '爱豆', 'url': 'https://jx.aidouer.net/?url=', 'mobile': 1 },
-  { 'name': 'BL', 'url': 'https://vip.bljiex.com/?v=', 'mobile': 0 },
-  { 'name': '冰豆', 'url': 'https://bd.jx.cn/?url=', 'mobile': 0 },
-  { 'name': 'H8', 'url': 'https://www.h8jx.com/jiexi.php?url=', 'mobile': 0 },
-  { 'name': 'JY', 'url': 'https://jx.playerjy.com/?url=', 'mobile': 0 },
-  { 'name': 'M3U8', 'url': 'https://jx.m3u8.tv/jiexi/?url=', 'mobile': 0 },
-  { 'name': 'PM', 'url': 'https://www.playm3u8.cn/jiexi.php?url=', 'mobile': 0 },
-  { 'name': '七哥', 'url': 'https://jx.nnxv.cn/tv.php?url=', 'mobile': 0 },
-  { 'name': '听乐', 'url': 'https://jx.dj6u.com/?url=', 'mobile': 1 },
-  { 'name': '维多', 'url': 'https://jx.ivito.cn/?url=', 'mobile': 0 },
-  { 'name': 'YT', 'url': 'https://jx.yangtu.top/?url=', 'mobile': 0 },
-  { 'name': '夜幕', 'url': 'https://www.yemu.xyz/?url=', 'mobile': 0 },
-  { 'name': '云析', 'url': 'https://jx.yparse.com/index.php?url=', 'mobile': 0 },
-  { 'name': '17云', 'url': 'https://www.1717yun.com/jx/ty.php?url=', 'mobile': 0 },
-  { 'name': '180', 'url': 'https://jx.000180.top/jx/?url=', 'mobile': 0 },
-  { 'name': '4K', 'url': 'https://jx.4kdv.com/?url=', 'mobile': 1 }
+  { 'name': '2S0', 'url': 'https://jx.2s0.cn/player/?url=' },
+  { 'name': '2ys', 'url': 'https://gj.fenxiangb.com/player/analysis.php?v=' },
+  { 'name': '虾米', 'url': 'https://jx.xmflv.com/?url=' }
 ]
 
 const iframeUrl = computed(() => {
@@ -30,28 +14,40 @@ const iframeUrl = computed(() => {
 
 const vipAddress = ref(playLine[0].url)
 const videoAddress = ref('')
-
-// 宽度判断是否为移动端
-const isMobile = () => {
-  return document.body.clientWidth <= 768
-}
+const radioValue = ref()
+const iframeLoading = ref(false)
 
 function inputHande(v: string) {
   localStorage.setItem('videoAddress', v)
 }
 
-function vipAddressChange(v: string) {
-  localStorage.setItem('vipAddress', v)
+function handelChange(v: any) {
+  vipAddress.value = v.url
+  localStorage.setItem('vipAddress', JSON.stringify(v))
+  ElMessage.success('切换成功,请稍等片刻...')
+
+  loading()
+}
+
+// 加载
+function loading() {
+  iframeLoading.value = true
+  setTimeout(() => {
+    iframeLoading.value = false
+  }, 1000)
 }
 
 onMounted(() => {
+  loading()
   const address = localStorage.getItem('videoAddress')
   const vip = localStorage.getItem('vipAddress')
   if (address) {
     videoAddress.value = address
   }
   if (vip) {
-    vipAddress.value = vip
+    const data = JSON.parse(vip)
+    vipAddress.value = data.url
+    radioValue.value = data.name
   }
 
   ElNotification({
@@ -67,14 +63,14 @@ onMounted(() => {
     <el-container>
       <el-header class="main-header">
         <div>
-          <el-image src="/favicon.ico" style="width: 40px;margin: 0 10px" />
+          <el-image src="/logo.ico" style="width: 40px;margin: 0 10px" />
         </div>
         <div class="main-center">
           <h1 style="display: inline-block">UnlockVid Pro</h1>
         </div>
       </el-header>
       <el-main>
-        <div>
+        <div v-loading="iframeLoading">
           <iframe
             id="playLine"
             :src="iframeUrl"
@@ -89,14 +85,15 @@ onMounted(() => {
           <div>
             <el-form label-position="top">
               <el-form-item label="播放线路">
-                <el-select v-model="vipAddress" placeholder="请选择播放线路" @change="vipAddressChange">
-                  <el-option
-                    v-for="(item,index) in playLine"
-                    :key="index"
+                <el-radio-group v-model="radioValue">
+                  <el-radio
                     :label="item.name"
-                    :value="item.url"
-                  ></el-option>
-                </el-select>
+                    v-for="(item,index) in playLine"
+                    @change="handelChange(item)"
+                    :key="index"
+                    border
+                  />
+                </el-radio-group>
               </el-form-item>
               <el-form-item label="视频链接">
                 <el-input type="textarea" v-model="videoAddress" rows="4" @input="inputHande"
