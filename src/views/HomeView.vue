@@ -5,7 +5,7 @@ import { ElMessage, ElNotification } from 'element-plus'
 const playLine = [
   { 'name': '2S0', 'url': 'https://jx.2s0.cn/player/?url=' },
   { 'name': '2ys', 'url': 'https://gj.fenxiangb.com/player/analysis.php?v=' },
-  { 'name': '虾米', 'url': 'https://jx.xmflv.com/?url=' }
+  { 'name': '虾米', 'url': 'https://jx.xmflv.com/?url=' },
 ]
 
 const iframeUrl = computed(() => {
