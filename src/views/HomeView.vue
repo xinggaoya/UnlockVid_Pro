@@ -14,7 +14,7 @@ const iframeUrl = computed(() => {
 
 const vipAddress = ref(playLine[0].url)
 const videoAddress = ref('')
-const radioValue = ref()
+const radioValue = ref(playLine[0].name)
 const iframeLoading = ref(false)
 
 function inputHande(v: string) {
