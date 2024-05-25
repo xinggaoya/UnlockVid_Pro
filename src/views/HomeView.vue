@@ -1,12 +1,12 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue'
 import { ElMessage, ElNotification } from 'element-plus'
 
 const playLine = [
-  {'name': '2S0', 'url': 'https://jx.2s0.cn/player/?url='},
-  {'name': '2ys', 'url': 'https://gj.fenxiangb.com/player/analysis.php?v='},
-  {"name": "B站1", "url": "https://jx.jsonplayer.com/player/?url="},
-  {'name': '虾米', 'url': 'https://jx.xmflv.com/?url='},
+  { 'name': '2S0', 'url': 'https://jx.2s0.cn/player/?url=' },
+  { 'name': '2ys', 'url': 'https://gj.fenxiangb.com/player/analysis.php?v=' },
+  { 'name': 'B站1', 'url': 'https://jx.jsonplayer.com/player/?url=' },
+  { 'name': '虾米', 'url': 'https://jx.xmflv.com/?url=' }
 ]
 
 const iframeUrl = computed(() => {
@@ -38,6 +38,19 @@ function loading() {
   }, 1000)
 }
 
+function hanleClear() {
+  videoAddress.value = ''
+  ElMessage.success('清除成功')
+}
+
+function pasteBoardCopy() {
+  videoAddress.value = ''
+  navigator.clipboard.readText().then(text => {
+    videoAddress.value = text
+    ElMessage.success('粘贴成功')
+  })
+}
+
 onMounted(() => {
   loading()
   const address = localStorage.getItem('videoAddress')
@@ -62,57 +75,57 @@ onMounted(() => {
 <template>
   <div class="common-layout">
     <el-container>
-      <el-header class="main-header">
-        <div>
-          <el-image src="/logo.ico" style="width: 40px;margin: 0 10px" />
-        </div>
-        <div class="main-center">
-          <h1 style="display: inline-block">UnlockVid Pro</h1>
-        </div>
-      </el-header>
       <el-main>
-        <div v-loading="iframeLoading">
-          <iframe
-            id="playLine"
-            :src="iframeUrl"
-            width="100%"
-            title="YouTube video player"
-            allowfullscreen
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          ></iframe>
-        </div>
-        <div>
-          <div>
+        <div class="layout-main">
+          <div v-loading="iframeLoading" style="flex: 1;margin-right: 20px">
+            <iframe
+              id="playLine"
+              :src="iframeUrl"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+              frameborder="0"
+              title="YouTube video player"
+              width="100%"
+            ></iframe>
+          </div>
+          <el-card header="播放设置">
             <el-form label-position="top">
+              <el-form-item>
+                <el-alert title="请注意部分接口存在恶意广告，请斟酌使用；仅供测试" type="warning" />
+              </el-form-item>
               <el-form-item label="播放线路">
                 <el-radio-group v-model="radioValue">
                   <el-radio
-                    :label="item.name"
                     v-for="(item,index) in playLine"
-                    @change="handelChange(item)"
                     :key="index"
+                    :label="item.name"
                     border
+                    @change="handelChange(item)"
                   />
                 </el-radio-group>
               </el-form-item>
               <el-form-item label="视频链接">
-                <el-input type="textarea" v-model="videoAddress" rows="4" @input="inputHande"
-                          placeholder="请输入视频原链接" />
+                <el-input v-model="videoAddress" clearable placeholder="请输入视频原链接" rows="4"
+                          type="textarea"
+                          @input="inputHande" />
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" @click="pasteBoardCopy">粘贴</el-button>
+                <el-button type="info" @click="hanleClear">清空</el-button>
               </el-form-item>
             </el-form>
-          </div>
-          <div class="main-center">
-            <el-space>
-              <el-link type="info" href="https://www.iqiyi.com">爱奇艺</el-link>
-              <el-link type="info" href="https://v.qq.com">腾讯视频</el-link>
-              <el-link type="info" href="https://www.youku.com">优酷</el-link>
-            </el-space>
-          </div>
+          </el-card>
+
         </div>
       </el-main>
       <el-footer class="main-center">
-        <el-text tag="mark">请注意部分接口存在恶意广告，请斟酌使用；仅供测试</el-text>
+        <div class="main-center">
+          <el-space>
+            <el-link href="https://www.iqiyi.com" target="_blank" type="info">爱奇艺</el-link>
+            <el-link href="https://v.qq.com" target="_blank" type="info">腾讯视频</el-link>
+            <el-link href="https://www.youku.com" target="_blank" type="info">优酷</el-link>
+          </el-space>
+        </div>
       </el-footer>
     </el-container>
   </div>
@@ -133,9 +146,13 @@ onMounted(() => {
 
 @media screen and (min-width: 768px) {
   .common-layout {
-    width: 768px;
     height: 100%;
     margin: 0 auto;
+  }
+
+  .layout-main {
+    display: flex;
+    justify-content: space-between;
   }
 
   #playLine {
